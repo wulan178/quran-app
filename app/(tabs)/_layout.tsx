@@ -1,35 +1,22 @@
 import { Tabs } from 'expo-router';
-import React from 'react';
+import { Moon, Sun } from 'lucide-react-native';
+import { useColorScheme } from 'nativewind';
+import { Pressable } from 'react-native';
 
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+export default function TabsLayout() {
+    const { colorScheme, setColorScheme } = useColorScheme();
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
-  return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
-    </Tabs>
-  );
+    return (
+        <Tabs
+            screenOptions={{
+                headerRight: () => (
+                    <Pressable onPress={() => setColorScheme(colorScheme === 'dark' ? 'light' : 'dark')} className='mr-4'>
+                        {colorScheme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+                    </Pressable>
+                ),
+            }}
+        >
+            <Tabs.Screen name='index' options={{ title: 'Home' }} />
+        </Tabs>
+    );
 }

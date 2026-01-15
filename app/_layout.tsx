@@ -1,24 +1,54 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { DarkTheme, DefaultTheme, ThemeProvider as NavigationThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
+import { useColorScheme } from 'nativewind';
+import '../global.css';
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { ThemeSwitcher } from '@/components/ThemeSwitcher';
+import { ThemeProvider, useTheme } from '@/contexts/ThemeContext';
+import { useEffect } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export const unstable_settings = {
-  anchor: '(tabs)',
+    anchor: '',
 };
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
+function NativeWindThemeSync() {
+    const { theme } = useTheme();
+    const { setColorScheme } = useColorScheme();
 
-  return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
-  );
+    useEffect(() => {
+        setColorScheme(theme);
+    }, [theme, setColorScheme]);
+
+    return null;
+}
+
+function RootLayoutNav() {
+    const { theme } = useTheme();
+
+    return (
+        <>
+            <NativeWindThemeSync />
+            <NavigationThemeProvider value={theme === 'dark' ? DarkTheme : DefaultTheme}>
+                <SafeAreaView style={{ flex: 1, backgroundColor: theme === 'dark' ? '#000' : '#fff' }}>
+                    <Stack
+                        screenOptions={{
+                            headerRight: () => <ThemeSwitcher />,
+                            headerTitle: 'Quran App',
+                        }}
+                    />
+                </SafeAreaView>
+                <StatusBar translucent style={theme === 'dark' ? 'light' : 'dark'} />
+            </NavigationThemeProvider>
+        </>
+    );
+}
+
+export default function RootLayout() {
+    return (
+        <ThemeProvider>
+            <RootLayoutNav />
+        </ThemeProvider>
+    );
 }
