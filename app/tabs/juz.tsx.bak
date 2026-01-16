@@ -1,0 +1,94 @@
+// import { Colors } from '@/constants/theme';
+// import { useTheme } from '@/contexts/ThemeContext';
+// import { getJuzList } from '@/services/quranApi';
+// import { router } from 'expo-router';
+// import { useEffect, useState } from 'react';
+// import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+
+// type Juz = {
+//     nomor: number;
+//     nama: string;
+// };
+
+// export default function JuzList() {
+//     const { theme } = useTheme();
+//     const colors = Colors[theme];
+//     const [juzList, setJuzList] = useState<Juz[]>([]);
+//     const [loading, setLoading] = useState(true);
+//     const [error, setError] = useState('');
+
+//     useEffect(() => {
+//         getJuzList()
+//             .then((data) => {
+//                 setJuzList(data);
+//                 setLoading(false);
+//             })
+//             .catch(() => {
+//                 setError('Gagal memuat data');
+//                 setLoading(false);
+//             });
+//     }, []);
+
+//     if (loading) {
+//         return (
+//             <View style={[styles.center, { backgroundColor: colors.background }]}>
+//                 <ActivityIndicator size='large' color={colors.tint} />
+//                 <Text style={{ color: colors.text, marginTop: 12 }}>Memuat juz...</Text>
+//             </View>
+//         );
+//     }
+
+//     if (error) {
+//         return (
+//             <View style={[styles.center, { backgroundColor: colors.background }]}>
+//                 <Text style={{ color: colors.text }}>{error}</Text>
+//             </View>
+//         );
+//     }
+
+//     return (
+//         <View className='flex-1 pb-16' style={{ backgroundColor: colors.background }}>
+//             <Text className='text-2xl font-bold text-center my-4 text-black dark:text-white'>Daftar Juz</Text>
+//             <FlatList
+//                 data={juzList}
+//                 keyExtractor={(item) => item.nomor.toString()}
+//                 contentContainerStyle={styles.list}
+//                 numColumns={2}
+//                 columnWrapperStyle={styles.row}
+//                 renderItem={({ item }) => (
+//                     <Pressable
+//                         className='flex-1 mx-2 my-2 p-4 rounded-lg border border-gray-300 dark:border-gray-700 items-center justify-center'
+//                         style={{ backgroundColor: colors.background }}
+//                         onPress={() => router.push(`/juz/${item.nomor}`)}
+//                     >
+//                         <Text style={[styles.juzNumber, { color: colors.tint }]}>{item.nomor}</Text>
+//                         <Text style={[styles.juzName, { color: colors.text }]}>{item.nama}</Text>
+//                     </Pressable>
+//                 )}
+//             />
+//         </View>
+//     );
+// }
+
+// const styles = StyleSheet.create({
+//     center: {
+//         flex: 1,
+//         justifyContent: 'center',
+//         alignItems: 'center',
+//     },
+//     list: {
+//         padding: 16,
+//     },
+//     row: {
+//         justifyContent: 'space-between',
+//     },
+//     juzNumber: {
+//         fontSize: 32,
+//         fontWeight: 'bold',
+//         marginBottom: 4,
+//     },
+//     juzName: {
+//         fontSize: 14,
+//         fontWeight: '500',
+//     },
+// });

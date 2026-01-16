@@ -4,7 +4,19 @@ module.exports = {
     presets: [require('nativewind/preset')],
     darkMode: 'class',
     theme: {
-        extend: {},
+        extend: {
+            fontFamily: {
+                sans: ['Inter_400Regular'],
+                inter: ['Inter_400Regular'],
+                'inter-bold': ['Inter_700Bold'],
+                arabic: ['ScheherazadeNew_400Regular'],
+                'arabic-bold': ['ScheherazadeNew_700Bold'],
+                poppins: ['Poppins_400Regular'],
+                'poppins-medium': ['Poppins_500Medium'],
+                'poppins-semibold': ['Poppins_600SemiBold'],
+                'poppins-bold': ['Poppins_700Bold'],
+            },
+        },
     },
     plugins: [],
 };

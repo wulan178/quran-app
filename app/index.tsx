@@ -1,103 +1,61 @@
 import { Colors } from '@/constants/theme';
 import { useTheme } from '@/contexts/ThemeContext';
-import { getSurahList } from '@/services/quranApi';
 import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, Pressable, StyleSheet, Text, View } from 'react-native';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
+import { Image, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-type Surah = {
-    nomor: number;
-    nama: string;
-    nama_latin: string;
-    jumlah_ayat: number;
-    tempat_turun: string;
-    arti: string;
-    deskripsi: string;
-    audio: string;
-};
+// Keep the splash screen visible while we fetch resources
+SplashScreen.preventAutoHideAsync();
 
-export default function Index() {
+export default function SplashScreenComponent() {
     const { theme } = useTheme();
     const colors = Colors[theme];
-    const [surahs, setSurahs] = useState<Surah[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
 
     useEffect(() => {
-        getSurahList()
-            .then((json) => {
-                setSurahs(json);
-                setLoading(false);
-            })
-            .catch(() => {
-                setError('Gagal memuat data');
-                setLoading(false);
-            });
+        // Show splash screen for 3 seconds
+        const timer = setTimeout(async () => {
+            await SplashScreen.hideAsync();
+            router.replace('/tabs/surah' as any);
+        }, 3000);
+
+        return () => clearTimeout(timer);
     }, []);
 
-    if (loading) {
-        return (
-            <View style={[styles.center, { backgroundColor: colors.background }]}>
-                <ActivityIndicator size='large' color={colors.tint} />
-                <Text style={{ color: colors.text, marginTop: 12 }}>Memuat surah...</Text>
-            </View>
-        );
-    }
-
-    if (error) {
-        return (
-            <View style={[styles.center, { backgroundColor: colors.background }]}>
-                <Text style={{ color: colors.text }}>{error}</Text>
-            </View>
-        );
-    }
-
     return (
-        <View className='pb-16'>
-            <Text className='text-2xl font-bold text-center my-4 text-black dark:text-white'>Daftar Surah</Text>
-            <FlatList
-                data={surahs}
-                keyExtractor={(item) => item.nomor.toString()}
-                contentContainerStyle={[styles.list, { backgroundColor: colors.background }]}
-                renderItem={({ item }) => (
-                    <Pressable className='flex flex-row items-center py-3 border-b border-gray-300 shadow rounded-md dark:border-gray-700' onPress={() => router.push(`/surah/${item.nomor}`)}>
-                        <Text style={[styles.number, { color: colors.text }]}>{item.nomor}</Text>
-                        <View>
-                            <Text style={[styles.name, { color: colors.text }]}>{item.nama}</Text>
-                            <Text style={[styles.translation, { color: colors.icon }]}>
-                                {item.nama_latin} • {item.jumlah_ayat} ayat
-                            </Text>
-                        </View>
-                    </Pressable>
-                )}
-            />
-        </View>
+        <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]} edges={['top', 'bottom']}>
+            <View style={styles.content}>
+                <Image source={require('@/assets/images/get-started.png')} style={styles.image} resizeMode='contain' />
+                <Text style={[styles.title, { color: colors.text }]}>Quran App</Text>
+                <Text style={[styles.subtitle, { color: colors.icon }]}>Membaca Al-Quran dengan mudah</Text>
+            </View>
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
-    center: {
+    container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
     },
-    list: {
-        padding: 16,
-    },
-    item: {
-        flexDirection: 'row',
+    content: {
         alignItems: 'center',
-        paddingVertical: 12,
-        borderBottomWidth: 1,
+        justifyContent: 'center',
     },
-    number: {
-        width: 32,
+    image: {
+        width: 200,
+        height: 200,
+        marginBottom: 32,
+    },
+    title: {
+        fontSize: 32,
         fontWeight: 'bold',
+        marginBottom: 8,
     },
-    name: {
-        fontSize: 18,
-    },
-    translation: {
-        fontSize: 12,
+    subtitle: {
+        fontSize: 16,
+        textAlign: 'center',
     },
 });
